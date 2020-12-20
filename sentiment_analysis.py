@@ -76,3 +76,10 @@ def compute_tweets(tweets_file, keywords_file):
 
 		counts[timezone][2] += 1
 		counts[timezone][-1] += tweet_score
+	
+	# calculate result
+	for key, values in counts.items():
+		values[0] = values[-1] / values[1] if values[1] != 0 else 0
+		values.pop()
+
+	result = [tuple(counts['Eastern']), tuple(counts['Central']), tuple(counts['Mountain']), tuple(counts['Pacific'])]
