@@ -1,5 +1,6 @@
 from string import punctuation
 
+
 def find_timezone(latitude, longitude):
 	"""
 	The purpose of this function is to determine the timezone,
@@ -27,6 +28,18 @@ def find_timezone(latitude, longitude):
 
 	return timezone
 
+
+def log(fname, message):
+	file = None
+	try:
+		file = open(fname, "a")
+	except:
+		file = open(fname, "w")
+	finally:
+		file.write(message)
+		file.close()
+
+
 def compute_tweets(tweets_file, keywords_file):
 	"""
 	This function will use these two files 
@@ -35,7 +48,7 @@ def compute_tweets(tweets_file, keywords_file):
 	param1 tweets_file: the name of the file containing the tweets
 	param2 keywords_file: the name of the file containing the keywords
 	"""
-	
+
 	result, keyword_score = list(), dict()
 
 	# [average, number of keyword tweets_file, total number of tweets, total happiness score]
