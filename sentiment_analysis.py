@@ -1,3 +1,5 @@
+from string import punctuation
+
 def find_timezone(latitude, longitude):
 	"""
 	The purpose of this function is to determine the timezone,
@@ -33,6 +35,7 @@ def compute_tweets(tweets_file, keywords_file):
 	param1 tweets_file: the name of the file containing the tweets
 	param2 keywords_file: the name of the file containing the keywords
 	"""
+	
 	result, keyword_score = list(), dict()
 
 	# [average, number of keyword tweets_file, total number of tweets, total happiness score]
@@ -42,44 +45,57 @@ def compute_tweets(tweets_file, keywords_file):
 		"Central" : [0, 0, 0, 0],
 		"Eastern" : [0, 0, 0, 0]
 	}
-
-	tweets = open(tweets_file, "r", encoding="utf-8").readlines()
-	keywords = open(keywords_file, "r", encoding="utf-8").readlines()
 	
-	# parse the keyword file, and store it to dict()
-	for line in keywords:
-		key, value = line.strip().split(",")
-		keyword_score[key] = int(value)
+	try:
 
-	for line in tweets:
+		tweets = open(tweets_file, "r", encoding="utf-8").readlines()
+		keywords = open(keywords_file, "r", encoding="utf-8").readlines()
+		
+		# parse the keyword file, and store it to dict()
+		for line in keywords:
+			key, value = line.strip().split(",")
+			keyword_score[key] = int(value)
 
-		latitude, longitude, value, date, time, *text = line.strip().split()
+		for line in tweets:
 
-		latitude, longitude = float(latitude[1:-1]), float(longitude[:-1])
+			latitude, longitude, value, date, time, *text = line.strip().split()
 
-		cleaner = lambda x : x.strip(punctuation).lower()
-		cleaned_text = list(map(cleaner, text))
+			latitude, longitude = float(latitude[1:-1]), float(longitude[:-1])
 
-		timezone = find_timezone(latitude, longitude)
+			cleaner = lambda x : x.strip(punctuation).lower()
+			cleaned_text = list(map(cleaner, text))
 
-		# calculate score of 1 tweet. score = sentiment_values / num of keywords in a tweet
-		num_keywords, sentiment_values, tweet_score = 0, 0, 0
-		for el in cleaned_text:
-			if el in keyword_score.keys():
-				num_keywords += 1
-				sentiment_values += keyword_score[el]
+			timezone = find_timezone(latitude, longitude)
 
-		# adding counts and score
-		if sentiment_values:
-			tweet_score = sentiment_values / num_keywords
-			counts[timezone][1] += 1
+			if not timezone: continue
 
-		counts[timezone][2] += 1
-		counts[timezone][-1] += tweet_score
+			# calculate score of 1 tweet. score = sentiment_values / num of keywords in a tweet
+			num_keywords, sentiment_values, tweet_score = 0, 0, 0
+			for el in cleaned_text:
+				if el in keyword_score.keys():
+					num_keywords += 1
+					sentiment_values += keyword_score[el]
+
+			# adding counts and score
+			if sentiment_values:
+				tweet_score = sentiment_values / num_keywords
+				counts[timezone][1] += 1
+
+			counts[timezone][2] += 1
+			counts[timezone][-1] += tweet_score
+
+		# calculate result
+		for key, values in counts.items():
+			values[0] = values[-1] / values[1] if values[1] != 0 else 0
+			values.pop()
+
+		result = [tuple(counts['Eastern']), tuple(counts['Central']), tuple(counts['Mountain']), tuple(counts['Pacific'])]
+
+	except EnvironmentError:
 	
-	# calculate result
-	for key, values in counts.items():
-		values[0] = values[-1] / values[1] if values[1] != 0 else 0
-		values.pop()
+		print('File Does Not Exists')
 
-	result = [tuple(counts['Eastern']), tuple(counts['Central']), tuple(counts['Mountain']), tuple(counts['Pacific'])]
+	return result
+
+
+
