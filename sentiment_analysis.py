@@ -42,3 +42,11 @@ def compute_tweets(tweets_file, keywords_file):
 		"Central" : [0, 0, 0, 0],
 		"Eastern" : [0, 0, 0, 0]
 	}
+
+	tweets = open(tweets_file, "r", encoding="utf-8").readlines()
+	keywords = open(keywords_file, "r", encoding="utf-8").readlines()
+	
+	# parse the keyword file, and store it to dict()
+	for line in keywords:
+		key, value = line.strip().split(",")
+		keyword_score[key] = int(value)
