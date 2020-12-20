@@ -50,3 +50,14 @@ def compute_tweets(tweets_file, keywords_file):
 	for line in keywords:
 		key, value = line.strip().split(",")
 		keyword_score[key] = int(value)
+
+	for line in tweets:
+
+			latitude, longitude, value, date, time, *text = line.strip().split()
+
+			latitude, longitude = float(latitude[1:-1]), float(longitude[:-1])
+
+			cleaner = lambda x : x.strip(punctuation).lower()
+			cleaned_text = list(map(cleaner, text))
+
+			timezone = find_timezone(latitude, longitude)
