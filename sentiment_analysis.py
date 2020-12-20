@@ -33,4 +33,4 @@ def compute_tweets(tweets_file, keywords_file):
 	param1 tweets_file: the name of the file containing the tweets
 	param2 keywords_file: the name of the file containing the keywords
 	"""
-	pass
+	result, keyword_score = list(), dict()
