@@ -24,3 +24,13 @@ def find_timezone(latitude, longitude):
 		timezone = "Eastern"
 
 	return timezone
+
+def compute_tweets(tweets_file, keywords_file):
+	"""
+	This function will use these two files 
+	to process the tweets and output the results.
+
+	param1 tweets_file: the name of the file containing the tweets
+	param2 keywords_file: the name of the file containing the keywords
+	"""
+	pass
