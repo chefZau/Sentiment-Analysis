@@ -34,3 +34,11 @@ def compute_tweets(tweets_file, keywords_file):
 	param2 keywords_file: the name of the file containing the keywords
 	"""
 	result, keyword_score = list(), dict()
+
+	# [average, number of keyword tweets_file, total number of tweets, total happiness score]
+	counts = {
+		"Pacific" : [0, 0, 0, 0],
+		"Mountain" : [0, 0, 0, 0],
+		"Central" : [0, 0, 0, 0],
+		"Eastern" : [0, 0, 0, 0]
+	}
