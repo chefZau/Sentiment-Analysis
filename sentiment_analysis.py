@@ -53,11 +53,26 @@ def compute_tweets(tweets_file, keywords_file):
 
 	for line in tweets:
 
-			latitude, longitude, value, date, time, *text = line.strip().split()
+		latitude, longitude, value, date, time, *text = line.strip().split()
 
-			latitude, longitude = float(latitude[1:-1]), float(longitude[:-1])
+		latitude, longitude = float(latitude[1:-1]), float(longitude[:-1])
 
-			cleaner = lambda x : x.strip(punctuation).lower()
-			cleaned_text = list(map(cleaner, text))
+		cleaner = lambda x : x.strip(punctuation).lower()
+		cleaned_text = list(map(cleaner, text))
 
-			timezone = find_timezone(latitude, longitude)
+		timezone = find_timezone(latitude, longitude)
+
+		# calculate score of 1 tweet. score = sentiment_values / num of keywords in a tweet
+		num_keywords, sentiment_values, tweet_score = 0, 0, 0
+		for el in cleaned_text:
+			if el in keyword_score.keys():
+				num_keywords += 1
+				sentiment_values += keyword_score[el]
+
+		# adding counts and score
+		if sentiment_values:
+			tweet_score = sentiment_values / num_keywords
+			counts[timezone][1] += 1
+
+		counts[timezone][2] += 1
+		counts[timezone][-1] += tweet_score
